@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ todolist.name }} - Todos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Lists</h2>
+        <ul>
+            {% for list in todolists %}
+            <li><a href="{{ url_for('show_list', list_id=list.id) }}">{{ list.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('home') }}"><button class="back-button">Back to Main Page</button></a>
+    </div>
+    <div class="main-content">
+        <h1>{{ todolist.name }}</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('show_list', list_id=todolist.id) }}" method="post">
+            <input type="text" placeholder="New task" name="todo_name">
+            <button type="submit">Add</button>
+        </form>
+        <h2>Todos</h2>
+        <div class="todo-container">
+            {% for todo in todolist.todos %}
+            <div class="todo">
+                <p {% if todo.checked %} style="text-decoration: line-through;" {% endif %}>{{ todo.name }}</p>
+                <div class="actions">
+                    <form action="{{ url_for('toggle_todo_checked', list_id=todolist.id, todo_id=todo.id) }}"
+                        method="post">
+                        <input type="checkbox" {% if todo.checked %}checked{% endif %} onchange="this.form.submit()">
+                    </form>
+                    <form action="{{ url_for('delete_todo', list_id=todolist.id, todo_id=todo.id) }}" method="post">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>

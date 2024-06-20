@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDoList</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <h1>ToDoList</h1>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash-messages">
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('home') }}" method="post">
+        <input type="text" placeholder="New list" name="list_name">
+        <button type="submit">Create List</button>
+    </form>
+    <h2>Lists</h2>
+    <div class="list-container">
+        {% for list in todolists %}
+        <div class="list">
+            <a href="{{ url_for('show_list', list_id=list.id) }}">{{ list.name }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
